@@ -178,7 +178,7 @@ npm run seed
 ### Admin Credentials
 
 ```
-Email: admin@shopnest.com
+Email: admin@homeshop.com
 
 Password: password123
 ```
