@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import ProductCard from '../components/ProductCard';
+import BannerSlider from '../components/BannerSlider';
 
 const Home = () => {
   const [products, setProducts] = useState([]);
@@ -17,25 +18,32 @@ const Home = () => {
         setLoading(false);
       }
     };
+
     fetchProducts();
   }, []);
 
   return (
     <div className="home-container">
-      <div className="hero-banner">
-        <h1>Welcome to HomeShop</h1>
-        <p>Discover the best products at unbeatable prices.</p>
-      </div>
+
+      {/* Hero Banner Slider */}
+      <BannerSlider />
+
+      {/* Featured Products */}
       <h2>Featured Products</h2>
+
       {loading ? (
         <div>Loading...</div>
       ) : (
         <div className="product-grid">
           {products.map((product) => (
-            <ProductCard key={product._id} product={product} />
+            <ProductCard
+              key={product._id}
+              product={product}
+            />
           ))}
         </div>
       )}
+
     </div>
   );
 };
