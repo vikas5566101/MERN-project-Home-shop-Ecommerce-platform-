@@ -110,6 +110,40 @@ const Checkout = () => {
     }
   };
 
+  const handleCOD = async () => {
+    if (!user) {
+      alert("Please login first");
+      navigate('/login');
+      return;
+    }
+
+    if (!address.fullName || !address.street || !address.city || !address.postalCode || !address.country) {
+      alert("Please fill all shipping address fields.");
+      return;
+    }
+
+    const saveOrderRes = await fetch('/api/orders', {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${user.token}`
+      },
+      body: JSON.stringify({
+        items: cartItems,
+        totalAmount: totalPrice,
+        address,
+        paymentId: 'COD_' + Date.now()
+      })
+    });
+    
+    if (saveOrderRes.ok) {
+      dispatch(clearCart());
+      navigate('/ordersuccess');
+    } else {
+      alert('Order failed to save');
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!user) {
@@ -133,7 +167,10 @@ const Checkout = () => {
           <input type="text" placeholder="Country" required value={address.country} onChange={(e) => setAddress({...address, country: e.target.value})} />
           <div className="checkout-summary">
             <h4>Total to Pay: ₹{totalPrice.toFixed(2)}</h4>
-            <button type="submit" className="btn">Pay Now</button>
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <button type="submit" className="btn">Pay Now</button>
+              <button type="button" className="btn" onClick={handleCOD} style={{ backgroundColor: '#22c55e' }}>Cash on Delivery</button>
+            </div>
           </div>
         </form>
       </div>
