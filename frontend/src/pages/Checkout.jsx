@@ -13,10 +13,18 @@ const Checkout = () => {
   const [address, setAddress] = useState({
     fullName: '', street: '', city: '', postalCode: '', country: ''
   });
+  const [loading, setLoading] = useState(false);
 
   const totalPrice = cartItems.reduce((acc, item) => acc + item.price * item.qty, 0);
 
   const handlePayment = async () => {
+    if (loading) return;
+    if (cartItems.length === 0) {
+      alert("Your cart is empty.");
+      return;
+    }
+
+    setLoading(true);
     try {
       const orderRes = await fetch('/api/payment/order', {
         method: 'POST',
@@ -31,6 +39,7 @@ const Checkout = () => {
         if (fallback) {
           return bypassPayment();
         } else {
+          setLoading(false);
           return alert("Payment failed to initialize");
         }
       }
@@ -43,34 +52,46 @@ const Checkout = () => {
         description: 'Test Transaction',
         order_id: orderData.id,
         handler: async function (response) {
-          const verifyRes = await fetch('/api/payment/verify', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(response)
-          });
-          if (verifyRes.ok) {
-            const saveOrderRes = await fetch('/api/orders', {
+          try {
+            const verifyRes = await fetch('/api/payment/verify', {
               method: 'POST',
-              headers: { 
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${user.token}`
-              },
-              body: JSON.stringify({
-                items: cartItems,
-                totalAmount: totalPrice,
-                address,
-                paymentId: response.razorpay_payment_id
-              })
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(response)
             });
+            if (verifyRes.ok) {
+              const saveOrderRes = await fetch('/api/orders', {
+                method: 'POST',
+                headers: { 
+                  'Content-Type': 'application/json',
+                  Authorization: `Bearer ${user.token}`
+                },
+                body: JSON.stringify({
+                  items: cartItems,
+                  totalAmount: totalPrice,
+                  address,
+                  paymentId: response.razorpay_payment_id
+                })
+              });
 
-            if (saveOrderRes.ok) {
-              dispatch(clearCart());
-              navigate('/ordersuccess');
+              if (saveOrderRes.ok) {
+                dispatch(clearCart());
+                navigate('/ordersuccess');
+              } else {
+                setLoading(false);
+                alert('Order saving failed');
+              }
             } else {
-              alert('Order saving failed');
+              setLoading(false);
+              alert('Payment verification failed');
             }
-          } else {
-            alert('Payment verification failed');
+          } catch (err) {
+            setLoading(false);
+            console.error(err);
+          }
+        },
+        modal: {
+          ondismiss: function() {
+            setLoading(false);
           }
         },
         prefill: {
@@ -87,33 +108,49 @@ const Checkout = () => {
       rzp1.open();
     } catch (error) {
       console.error(error);
+      setLoading(false);
     }
   };
 
   const bypassPayment = async () => {
-    const saveOrderRes = await fetch('/api/orders', {
-      method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${user.token}`
-      },
-      body: JSON.stringify({
-        items: cartItems,
-        totalAmount: totalPrice,
-        address,
-        paymentId: 'bypass_txn_' + Date.now()
-      })
-    });
-    if (saveOrderRes.ok) {
-      dispatch(clearCart());
-      navigate('/ordersuccess');
+    try {
+      const saveOrderRes = await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${user.token}`
+        },
+        body: JSON.stringify({
+          items: cartItems,
+          totalAmount: totalPrice,
+          address,
+          paymentId: 'bypass_txn_' + Date.now()
+        })
+      });
+      if (saveOrderRes.ok) {
+        dispatch(clearCart());
+        navigate('/ordersuccess');
+      } else {
+        setLoading(false);
+        alert('Order saving failed');
+      }
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
     }
   };
 
   const handleCOD = async () => {
+    if (loading) return;
+
     if (!user) {
       alert("Please login first");
       navigate('/login');
+      return;
+    }
+
+    if (cartItems.length === 0) {
+      alert("Your cart is empty.");
       return;
     }
 
@@ -122,25 +159,34 @@ const Checkout = () => {
       return;
     }
 
-    const saveOrderRes = await fetch('/api/orders', {
-      method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${user.token}`
-      },
-      body: JSON.stringify({
-        items: cartItems,
-        totalAmount: totalPrice,
-        address,
-        paymentId: 'COD_' + Date.now()
-      })
-    });
-    
-    if (saveOrderRes.ok) {
-      dispatch(clearCart());
-      navigate('/ordersuccess');
-    } else {
-      alert('Order failed to save');
+    setLoading(true);
+
+    try {
+      const saveOrderRes = await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${user.token}`
+        },
+        body: JSON.stringify({
+          items: cartItems,
+          totalAmount: totalPrice,
+          address,
+          paymentId: 'COD_' + Date.now()
+        })
+      });
+      
+      if (saveOrderRes.ok) {
+        dispatch(clearCart());
+        navigate('/ordersuccess');
+      } else {
+        setLoading(false);
+        alert('Order failed to save');
+      }
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+      alert('An error occurred while placing the order.');
     }
   };
 
@@ -160,16 +206,20 @@ const Checkout = () => {
       <div className="checkout-content">
         <form onSubmit={handleSubmit} className="shipping-form">
           <h3>Shipping Address</h3>
-          <input type="text" placeholder="Full Name" required value={address.fullName} onChange={(e) => setAddress({...address, fullName: e.target.value})} />
-          <input type="text" placeholder="Street" required value={address.street} onChange={(e) => setAddress({...address, street: e.target.value})} />
-          <input type="text" placeholder="City" required value={address.city} onChange={(e) => setAddress({...address, city: e.target.value})} />
-          <input type="text" placeholder="Postal Code" required value={address.postalCode} onChange={(e) => setAddress({...address, postalCode: e.target.value})} />
-          <input type="text" placeholder="Country" required value={address.country} onChange={(e) => setAddress({...address, country: e.target.value})} />
+          <input type="text" placeholder="Full Name" required value={address.fullName} onChange={(e) => setAddress({...address, fullName: e.target.value})} disabled={loading} />
+          <input type="text" placeholder="Street" required value={address.street} onChange={(e) => setAddress({...address, street: e.target.value})} disabled={loading} />
+          <input type="text" placeholder="City" required value={address.city} onChange={(e) => setAddress({...address, city: e.target.value})} disabled={loading} />
+          <input type="text" placeholder="Postal Code" required value={address.postalCode} onChange={(e) => setAddress({...address, postalCode: e.target.value})} disabled={loading} />
+          <input type="text" placeholder="Country" required value={address.country} onChange={(e) => setAddress({...address, country: e.target.value})} disabled={loading} />
           <div className="checkout-summary">
             <h4>Total to Pay: ₹{totalPrice.toFixed(2)}</h4>
             <div style={{ display: 'flex', gap: '10px' }}>
-              <button type="submit" className="btn">Pay Now</button>
-              <button type="button" className="btn" onClick={handleCOD} style={{ backgroundColor: '#22c55e' }}>Cash on Delivery</button>
+              <button type="submit" className="btn" disabled={loading}>
+                {loading ? 'Processing...' : 'Pay Now'}
+              </button>
+              <button type="button" className="btn" onClick={handleCOD} disabled={loading} style={{ backgroundColor: loading ? '#9ca3af' : '#22c55e', cursor: loading ? 'not-allowed' : 'pointer' }}>
+                {loading ? 'Placing Order...' : 'Cash on Delivery'}
+              </button>
             </div>
           </div>
         </form>

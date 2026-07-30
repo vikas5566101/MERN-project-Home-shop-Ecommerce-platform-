@@ -5,6 +5,7 @@ const orderSchema = new mongoose.Schema({
   items: [
     {
       productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
+      name: { type: String },
       qty: { type: Number, required: true },
       price: { type: Number, required: true }
     }
@@ -17,7 +18,8 @@ const orderSchema = new mongoose.Schema({
     postalCode: { type: String, required: true },
     country: { type: String, required: true }
   },
-  paymentId: { type: String },
+  paymentId: { type: String, unique: true, sparse: true },
+  paymentMethod: { type: String, enum: ['COD', 'Online'], default: 'COD' },
   status: { type: String, enum: ['Pending', 'Shipped', 'Delivered'], default: 'Pending' },
 }, { timestamps: true });
 
