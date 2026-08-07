@@ -1,44 +1,25 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
-const AddProduct = () => {
+const VendorAddProduct = () => {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   
   const [formData, setFormData] = useState({
-    name: '', description: '', price: '', category: '', stock: '', vendorId: ''
+    name: '', description: '', price: '', category: '', stock: ''
   });
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [vendors, setVendors] = useState([]);
 
-  useEffect(() => {
-    if (user && user.role === 'admin') {
-      const fetchVendors = async () => {
-        try {
-          const res = await fetch('/api/vendors/approved', {
-            headers: { Authorization: `Bearer ${user.token}` }
-          });
-          const data = await res.json();
-          if (res.ok) setVendors(data);
-        } catch (err) {
-          console.error(err);
-        }
-      };
-      fetchVendors();
-    }
-  }, [user]);
-
-  if (!user || user.role !== 'admin') {
-    navigate('/');
+  if (!user || user.role !== 'vendor') {
+    navigate('/login');
     return null;
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!image) return alert('Please select an image');
-    if (!formData.vendorId) return alert('Please select a vendor for this product');
     
     setLoading(true);
     const data = new FormData();
@@ -47,7 +28,6 @@ const AddProduct = () => {
     data.append('price', formData.price);
     data.append('category', formData.category);
     data.append('stock', formData.stock);
-    data.append('vendorId', formData.vendorId);
     data.append('image', image);
 
     try {
@@ -59,8 +39,8 @@ const AddProduct = () => {
       const responseData = await res.json();
       
       if (res.ok) {
-        alert('Product created successfully with Cloudinary Image URL!');
-        navigate('/shop');
+        alert('Product created successfully!');
+        navigate('/vendor/products');
       } else {
         alert(responseData.message || 'Error creating product');
       }
@@ -73,21 +53,9 @@ const AddProduct = () => {
 
   return (
     <div style={{ maxWidth: '600px', margin: '40px auto', background: '#18181b', padding: '40px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
-      <h2 style={{ color: '#f97316', marginBottom: '20px' }}>Add New Product (Admin)</h2>
+      <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: '#a1a1aa', cursor: 'pointer', marginBottom: '20px' }}>← Back</button>
+      <h2 style={{ color: '#f97316', marginBottom: '20px' }}>Add New Product</h2>
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-        
-        <select 
-          required 
-          value={formData.vendorId} 
-          onChange={(e) => setFormData({...formData, vendorId: e.target.value})} 
-          style={inputStyle}
-        >
-          <option value="" disabled>-- Select Vendor --</option>
-          {vendors.map(v => (
-            <option key={v._id} value={v._id}>{v.storeName} ({v.userId.email})</option>
-          ))}
-        </select>
-
         <input 
           type="text" placeholder="Product Name" required 
           onChange={(e) => setFormData({...formData, name: e.target.value})} 
@@ -115,7 +83,7 @@ const AddProduct = () => {
         />
         
         <div style={{ padding: '15px', border: '1px dashed #f97316', borderRadius: '8px' }}>
-          <label style={{ display: 'block', marginBottom: '10px', color: '#a1a1aa' }}>Upload Product Image (Cloudinary)</label>
+          <label style={{ display: 'block', marginBottom: '10px', color: '#a1a1aa' }}>Upload Product Image</label>
           <input 
             type="file" accept="image/*" required 
             onChange={(e) => setImage(e.target.files[0])} 
@@ -124,7 +92,7 @@ const AddProduct = () => {
         </div>
 
         <button type="submit" disabled={loading} className="btn" style={{ marginTop: '10px' }}>
-          {loading ? 'Uploading & Creating...' : 'Publish Product'}
+          {loading ? 'Uploading...' : 'Publish Product'}
         </button>
       </form>
     </div>
@@ -141,4 +109,4 @@ const inputStyle = {
   outline: 'none'
 };
 
-export default AddProduct;
+export default VendorAddProduct;
