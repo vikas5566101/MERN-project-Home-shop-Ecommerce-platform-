@@ -23,17 +23,50 @@ const getProductById = async (req, res) => {
   }
 };
 
+const parseArray = (val) => {
+  if (!val) return [];
+  if (Array.isArray(val)) return val;
+  if (typeof val === 'string') {
+    try {
+      const parsed = JSON.parse(val);
+      if (Array.isArray(parsed)) return parsed;
+    } catch (e) {
+      // ignore JSON parse error, fall back to split
+    }
+    return val.split(',').map(s => s.trim()).filter(Boolean);
+  }
+  return [];
+};
+
 const createProduct = async (req, res) => {
   try {
-    const { name, description, price, category, stock } = req.body;
+    const {
+      name, description, price, category, stock,
+      gender, brand, discount, sizes, colors, fabric, fit
+    } = req.body;
+
     let imageUrl = '';
     if (req.file) {
       const result = await cloudinary.uploader.upload(req.file.path);
       imageUrl = result.secure_url;
     }
+
     const product = new Product({
-      name, description, price, category, stock, imageUrl
+      name,
+      description,
+      price: Number(price),
+      category,
+      stock: Number(stock),
+      imageUrl,
+      gender,
+      brand,
+      discount: discount ? Number(discount) : 0,
+      sizes: parseArray(sizes),
+      colors: parseArray(colors),
+      fabric,
+      fit
     });
+
     const createdProduct = await product.save();
     res.status(201).json(createdProduct);
   } catch (error) {
@@ -43,14 +76,25 @@ const createProduct = async (req, res) => {
 
 const updateProduct = async (req, res) => {
   try {
-    const { name, description, price, category, stock } = req.body;
+    const {
+      name, description, price, category, stock,
+      gender, brand, discount, sizes, colors, fabric, fit
+    } = req.body;
+
     const product = await Product.findById(req.params.id);
     if (product) {
-      product.name = name || product.name;
-      product.description = description || product.description;
-      product.price = price || product.price;
-      product.category = category || product.category;
-      product.stock = stock || product.stock;
+      product.name = name !== undefined ? name : product.name;
+      product.description = description !== undefined ? description : product.description;
+      product.price = price !== undefined ? Number(price) : product.price;
+      product.category = category !== undefined ? category : product.category;
+      product.stock = stock !== undefined ? Number(stock) : product.stock;
+      product.gender = gender !== undefined ? gender : product.gender;
+      product.brand = brand !== undefined ? brand : product.brand;
+      product.discount = discount !== undefined ? Number(discount) : product.discount;
+      if (sizes !== undefined) product.sizes = parseArray(sizes);
+      if (colors !== undefined) product.colors = parseArray(colors);
+      product.fabric = fabric !== undefined ? fabric : product.fabric;
+      product.fit = fit !== undefined ? fit : product.fit;
 
       if (req.file) {
         const result = await cloudinary.uploader.upload(req.file.path);

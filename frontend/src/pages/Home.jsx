@@ -1,13 +1,32 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ProductCard from '../components/ProductCard';
 import BannerSlider from '../components/BannerSlider';
+
+const DEFAULT_CATEGORIES = [
+  { name: 'T-Shirts', icon: '👕', description: 'Casual & Graphic Tees' },
+  { name: 'Jeans', icon: '👖', description: 'Slim, Regular & Skinny Fit' },
+  { name: 'Shirts', icon: '👔', description: 'Formal & Casual Shirts' },
+  { name: 'Dresses', icon: '👗', description: 'Midi, Maxi & Party Dresses' },
+  { name: 'Kurtis', icon: '👘', description: 'Ethnic & Festive Kurtis' },
+  { name: 'Hoodies', icon: '🧥', description: 'Warm Fleece Hoodies' },
+  { name: 'Jackets', icon: '🧥', description: 'Winter & Puffer Jackets' },
+  { name: 'Tops', icon: '👚', description: 'Trendy Tops & Blouses' },
+  { name: 'Sarees', icon: '🥻', description: 'Silk & Traditional Sarees' },
+  { name: 'Activewear', icon: '🧘', description: 'Gym & Yoga Apparel' },
+  { name: 'Trousers', icon: '👖', description: 'Chinos & Formal Pants' },
+  { name: 'Joggers', icon: '🏃', description: 'Sports & Lounge Joggers' },
+  { name: 'Shorts', icon: '🩳', description: 'Casual & Training Shorts' },
+  { name: 'Skirts', icon: '👗', description: 'A-Line & Pencil Skirts' },
+  { name: 'Sweaters', icon: '🧶', description: 'Thermal & Fleece Sweaters' },
+];
 
 const Home = () => {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const sliderRef = useRef(null);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -15,9 +34,25 @@ const Home = () => {
         const res = await fetch('/api/products');
         const data = await res.json();
         setProducts(data.slice(0, 4)); // Featured products
-        setCategories([...new Set(data.map(p => p.category).filter(Boolean))]);
+
+        // Dynamic category extraction with fallback to presets
+        const dynamicCatNames = [...new Set(data.map((p) => p.category).filter(Boolean))];
+        if (dynamicCatNames.length > 0) {
+          const combined = dynamicCatNames.map((cat) => {
+            const found = DEFAULT_CATEGORIES.find((c) => c.name.toLowerCase() === cat.toLowerCase());
+            return {
+              name: cat,
+              icon: found ? found.icon : '📦',
+              description: found ? found.description : 'Explore items in this category',
+            };
+          });
+          setCategories(combined);
+        } else {
+          setCategories(DEFAULT_CATEGORIES);
+        }
       } catch (error) {
         console.error(error);
+        setCategories(DEFAULT_CATEGORIES);
       } finally {
         setLoading(false);
       }
@@ -26,48 +61,71 @@ const Home = () => {
     fetchProducts();
   }, []);
 
+  const handleCategoryClick = (categoryName) => {
+    navigate(`/shop?category=${encodeURIComponent(categoryName)}`);
+  };
+
+  const scroll = (direction) => {
+    if (sliderRef.current) {
+      const scrollAmount = direction === 'left' ? -280 : 280;
+      sliderRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+    }
+  };
+
   return (
     <div className="home-container">
 
       {/* Hero Banner Slider */}
       <BannerSlider />
 
-      {/* Categories Section */}
-      <h2>Shop by Category</h2>
-      {loading ? (
-        <div>Loading categories...</div>
-      ) : (
-        <div className="category-grid" style={{ display: 'flex', gap: '15px', overflowX: 'auto', marginBottom: '40px', padding: '10px 0' }}>
-          {categories.map((cat) => (
+      {/* Shop by Category Section - Single Line Slidable */}
+      <section className="categories-section">
+        <div className="section-header-with-nav">
+          <div className="section-header">
+            <h2>Shop by Category</h2>
+            <p>Explore top products curated just for you</p>
+          </div>
+          <div className="slider-controls">
+            <button className="slider-btn" onClick={() => scroll('left')} aria-label="Scroll Left">‹</button>
+            <button className="slider-btn" onClick={() => scroll('right')} aria-label="Scroll Right">›</button>
+          </div>
+        </div>
+
+        <div className="category-slider" ref={sliderRef}>
+          {categories.map((cat, index) => (
             <div
-              key={cat}
+              key={index}
               className="category-card"
-              onClick={() => navigate('/shop', { state: { category: cat } })}
-              style={{ padding: '20px', minWidth: '150px', textAlign: 'center', backgroundColor: '#f4f4f4', borderRadius: '8px', cursor: 'pointer', boxShadow: '0 2px 4px rgba(0,0,0,0.1)', transition: 'transform 0.2s' }}
-              onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
-              onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
+              onClick={() => handleCategoryClick(cat.name)}
+              title={`Shop ${cat.name}`}
             >
-              <h3 style={{ margin: 0, fontSize: '1.2rem', color: '#333' }}>{cat}</h3>
+              <div className="category-icon">{cat.icon}</div>
+              <h3 className="category-name">{cat.name}</h3>
             </div>
           ))}
         </div>
-      )}
+      </section>
 
       {/* Featured Products */}
-      <h2>Featured Products</h2>
-
-      {loading ? (
-        <div>Loading...</div>
-      ) : (
-        <div className="product-grid">
-          {products.map((product) => (
-            <ProductCard
-              key={product._id}
-              product={product}
-            />
-          ))}
+      <section className="featured-section" style={{ marginTop: '50px' }}>
+        <div className="section-header">
+          <h2>Featured Products</h2>
+          <p>Handpicked selections with incredible deals</p>
         </div>
-      )}
+
+        {loading ? (
+          <div>Loading...</div>
+        ) : (
+          <div className="product-grid">
+            {products.map((product) => (
+              <ProductCard
+                key={product._id}
+                product={product}
+              />
+            ))}
+          </div>
+        )}
+      </section>
 
     </div>
   );

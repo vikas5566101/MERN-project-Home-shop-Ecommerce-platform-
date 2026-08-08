@@ -8,7 +8,14 @@ const productSchema = new mongoose.Schema({
   stock: { type: Number, required: true },
   imageUrl: { type: String, required: true },
   ratings: { type: Number, default: 0 },
-  numReviews: { type: Number, default: 0 }
+  numReviews: { type: Number, default: 0 },
+  gender: { type: String },
+  brand: { type: String },
+  discount: { type: Number, default: 0 },
+  sizes: [{ type: String }],
+  colors: [{ type: String }],
+  fabric: { type: String },
+  fit: { type: String }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Product', productSchema);
