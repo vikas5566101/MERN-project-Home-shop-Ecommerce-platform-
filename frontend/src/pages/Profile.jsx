@@ -64,7 +64,15 @@ useEffect(() => {
           <p style={{ color: '#a1a1aa', fontSize: '1.2rem', marginBottom: '15px' }}><strong>Email:</strong> {user.email}</p>
           <span style={badgeStyle}>Account Type: {user.role.toUpperCase()}</span>
         </div>
-        <button onClick={handleLogout} className="btn" style={{ background: '#ef4444', boxShadow: 'none' }}>Logout</button>
+        <div style={{ display: 'flex', gap: '10px' }}>
+          {user.role === 'user' && (
+            <Link to="/apply-vendor" className="btn" style={{ background: '#f97316', boxShadow: 'none' }}>Become a Vendor</Link>
+          )}
+          {user.role === 'vendor' && (
+            <Link to="/vendor/dashboard" className="btn" style={{ background: '#10b981', boxShadow: 'none' }}>Vendor Dashboard</Link>
+          )}
+          <button onClick={handleLogout} className="btn" style={{ background: '#ef4444', boxShadow: 'none' }}>Logout</button>
+        </div>
       </div>
 
       <h3 style={{ color: '#f97316', marginBottom: '20px', fontSize: '1.5rem' }}>Order History</h3>

@@ -61,7 +61,7 @@ const Checkout = () => {
             if (verifyRes.ok) {
               const saveOrderRes = await fetch('/api/orders', {
                 method: 'POST',
-                headers: { 
+                headers: {
                   'Content-Type': 'application/json',
                   Authorization: `Bearer ${user.token}`
                 },
@@ -90,7 +90,7 @@ const Checkout = () => {
           }
         },
         modal: {
-          ondismiss: function() {
+          ondismiss: function () {
             setLoading(false);
           }
         },
@@ -103,7 +103,7 @@ const Checkout = () => {
           color: '#f97316'
         }
       };
-      
+
       const rzp1 = new window.Razorpay(options);
       rzp1.open();
     } catch (error) {
@@ -116,7 +116,7 @@ const Checkout = () => {
     try {
       const saveOrderRes = await fetch('/api/orders', {
         method: 'POST',
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${user.token}`
         },
@@ -164,7 +164,7 @@ const Checkout = () => {
     try {
       const saveOrderRes = await fetch('/api/orders', {
         method: 'POST',
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${user.token}`
         },
@@ -175,7 +175,7 @@ const Checkout = () => {
           paymentId: 'COD_' + Date.now()
         })
       });
-      
+
       if (saveOrderRes.ok) {
         dispatch(clearCart());
         navigate('/ordersuccess');
@@ -206,11 +206,11 @@ const Checkout = () => {
       <div className="checkout-content">
         <form onSubmit={handleSubmit} className="shipping-form">
           <h3>Shipping Address</h3>
-          <input type="text" placeholder="Full Name" required value={address.fullName} onChange={(e) => setAddress({...address, fullName: e.target.value})} disabled={loading} />
-          <input type="text" placeholder="Street" required value={address.street} onChange={(e) => setAddress({...address, street: e.target.value})} disabled={loading} />
-          <input type="text" placeholder="City" required value={address.city} onChange={(e) => setAddress({...address, city: e.target.value})} disabled={loading} />
-          <input type="text" placeholder="Postal Code" required value={address.postalCode} onChange={(e) => setAddress({...address, postalCode: e.target.value})} disabled={loading} />
-          <input type="text" placeholder="Country" required value={address.country} onChange={(e) => setAddress({...address, country: e.target.value})} disabled={loading} />
+          <input type="text" placeholder="Full Name" required value={address.fullName} onChange={(e) => setAddress({ ...address, fullName: e.target.value })} disabled={loading} />
+          <input type="text" placeholder="Street" required value={address.street} onChange={(e) => setAddress({ ...address, street: e.target.value })} disabled={loading} />
+          <input type="text" placeholder="City" required value={address.city} onChange={(e) => setAddress({ ...address, city: e.target.value })} disabled={loading} />
+          <input type="text" placeholder="Postal Code" required value={address.postalCode} onChange={(e) => setAddress({ ...address, postalCode: e.target.value })} disabled={loading} />
+          <input type="text" placeholder="Country" required value={address.country} onChange={(e) => setAddress({ ...address, country: e.target.value })} disabled={loading} />
           <div className="checkout-summary">
             <h4>Total to Pay: ₹{totalPrice.toFixed(2)}</h4>
             <div style={{ display: 'flex', gap: '10px' }}>

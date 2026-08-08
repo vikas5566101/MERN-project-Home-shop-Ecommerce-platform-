@@ -1,9 +1,23 @@
 const Product = require('../models/Product');
+const Vendor = require('../models/Vendor');
 const cloudinary = require('../config/cloudinary');
 
 const getProducts = async (req, res) => {
   try {
-    const products = await Product.find({});
+    const products = await Product.find({}).populate('vendorId', 'storeName');
+    res.json(products);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const getVendorProducts = async (req, res) => {
+  try {
+    const vendor = await Vendor.findOne({ userId: req.user._id });
+    if (!vendor) {
+      return res.status(404).json({ message: 'Vendor profile not found' });
+    }
+    const products = await Product.find({ vendorId: vendor._id });
     res.json(products);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -40,12 +54,27 @@ const parseArray = (val) => {
 
 const createProduct = async (req, res) => {
   try {
+    let vendorId = req.body.vendorId || null;
+    
+    if (req.user.role === 'vendor') {
+      const vendor = await Vendor.findOne({ userId: req.user._id });
+      if (!vendor) {
+        return res.status(400).json({ message: 'You must have an approved Vendor profile to create products.' });
+      }
+      vendorId = vendor._id;
+    } else if (req.user.role === 'admin' && !vendorId) {
+      const vendor = await Vendor.findOne({ userId: req.user._id });
+      if (vendor) {
+        vendorId = vendor._id;
+      }
+    }
+
     const {
       name, description, price, category, stock,
-      gender, brand, discount, sizes, colors, fabric, fit
+      imageUrl: bodyImageUrl, gender, brand, discount, sizes, colors, fabric, fit
     } = req.body;
 
-    let imageUrl = '';
+    let imageUrl = bodyImageUrl || '';
     if (req.file) {
       const result = await cloudinary.uploader.upload(req.file.path);
       imageUrl = result.secure_url;
@@ -64,7 +93,8 @@ const createProduct = async (req, res) => {
       sizes: parseArray(sizes),
       colors: parseArray(colors),
       fabric,
-      fit
+      fit,
+      vendorId
     });
 
     const createdProduct = await product.save();
@@ -78,11 +108,19 @@ const updateProduct = async (req, res) => {
   try {
     const {
       name, description, price, category, stock,
-      gender, brand, discount, sizes, colors, fabric, fit
+      imageUrl: bodyImageUrl, gender, brand, discount, sizes, colors, fabric, fit
     } = req.body;
 
     const product = await Product.findById(req.params.id);
     if (product) {
+
+      if (req.user.role !== 'admin') {
+        const vendor = await Vendor.findOne({ userId: req.user._id });
+        if (!vendor || String(product.vendorId) !== String(vendor._id)) {
+          return res.status(403).json({ message: 'Not authorized to edit this product.' });
+        }
+      }
+
       product.name = name !== undefined ? name : product.name;
       product.description = description !== undefined ? description : product.description;
       product.price = price !== undefined ? Number(price) : product.price;
@@ -96,6 +134,9 @@ const updateProduct = async (req, res) => {
       product.fabric = fabric !== undefined ? fabric : product.fabric;
       product.fit = fit !== undefined ? fit : product.fit;
 
+      if (bodyImageUrl) {
+        product.imageUrl = bodyImageUrl;
+      }
       if (req.file) {
         const result = await cloudinary.uploader.upload(req.file.path);
         product.imageUrl = result.secure_url;
@@ -114,6 +155,13 @@ const deleteProduct = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
     if (product) {
+      if (req.user.role !== 'admin') {
+        const vendor = await Vendor.findOne({ userId: req.user._id });
+        if (!vendor || String(product.vendorId) !== String(vendor._id)) {
+          return res.status(403).json({ message: 'Not authorized to delete this product.' });
+        }
+      }
+
       await product.deleteOne();
       res.json({ message: 'Product removed' });
     } else {
@@ -124,4 +172,4 @@ const deleteProduct = async (req, res) => {
   }
 };
 
-module.exports = { getProducts, getProductById, createProduct, updateProduct, deleteProduct };
+module.exports = { getProducts, getVendorProducts, getProductById, createProduct, updateProduct, deleteProduct };

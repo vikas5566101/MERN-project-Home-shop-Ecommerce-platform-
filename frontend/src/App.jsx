@@ -21,6 +21,11 @@ import EditProduct from './admin/EditProduct';
 import AdminOrders from './admin/AdminOrders';
 import AdminUsers from './admin/AdminUsers';
 import VerifyOTP from './pages/VerifyOTP';
+import ApplyVendor from './pages/ApplyVendor';
+import AdminVendors from './admin/AdminVendors';
+import VendorDashboard from './vendor/VendorDashboard';
+import VendorAddProduct from './vendor/VendorAddProduct';
+import VendorProducts from './vendor/VendorProducts';
 
 function App() {
   return (
@@ -36,6 +41,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/apply-vendor" element={<ApplyVendor />} />
           <Route path="/ordersuccess" element={<OrderSuccess />} />
           <Route path="/about" element={<About />} />
           <Route path="/disclaimer" element={<Disclaimer />} />
@@ -46,6 +52,12 @@ function App() {
           <Route path="/admin/edit-product/:id" element={<EditProduct />} />
           <Route path="/admin/orders" element={<AdminOrders />} />
           <Route path="/admin/users" element={<AdminUsers />} />
+          <Route path="/admin/vendors" element={<AdminVendors />} />
+          
+          <Route path="/vendor/dashboard" element={<VendorDashboard />} />
+          <Route path="/vendor/add-product" element={<VendorAddProduct />} />
+          <Route path="/vendor/products" element={<VendorProducts />} />
+          
           <Route path="/verify-otp" element={<VerifyOTP />} />
         </Routes>
       </div>
