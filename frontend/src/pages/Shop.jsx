@@ -7,14 +7,21 @@ const Shop = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('All');
+
   const location = useLocation();
-  const [category, setCategory] = useState(location.state?.category || 'All');
 
   useEffect(() => {
-    if (location.state?.category) {
-      setCategory(location.state.category);
+    const params = new URLSearchParams(location.search);
+    const categoryParam = params.get('category');
+    if (categoryParam) {
+      setSelectedCategory(categoryParam);
+    } else if (location.state?.category) {
+      setSelectedCategory(location.state.category);
+    } else {
+      setSelectedCategory('All');
     }
-  }, [location.state]);
+  }, [location.search, location.state]);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -31,39 +38,46 @@ const Shop = () => {
     fetchProducts();
   }, []);
 
-  const categories = ['All', ...new Set(products.map(p => p.category).filter(Boolean))];
+  const categories = ['All', ...new Set(products.map((p) => p.category).filter(Boolean))];
 
-  const filteredProducts = products.filter(p => {
+  const filteredProducts = products.filter((p) => {
     const matchesSearch = p.name.toLowerCase().includes(search.toLowerCase());
-    const matchesCategory = category === 'All' || p.category === category;
+    const matchesCategory =
+      selectedCategory === 'All' || (p.category && p.category.toLowerCase() === selectedCategory.toLowerCase());
     return matchesSearch && matchesCategory;
   });
 
   return (
     <div className="shop-container">
-      <h2>Shop Products</h2>
-      <div className="filter-controls" style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
-        <input
-          type="text"
-          placeholder="Search products..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="search-bar"
-          style={{ flex: 1, margin: 0 }}
-        />
-        <select
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          className="category-select"
-          style={{ padding: '10px', borderRadius: '4px', border: '1px solid #ccc' }}
-        >
-          {categories.map(cat => (
-            <option key={cat} value={cat}>{cat}</option>
-          ))}
-        </select>
+      <h2>All Products</h2>
+
+      <input
+        type="text"
+        placeholder="Search products by name..."
+        value={search}
+        onChange={(e) => setSearch(e.target.value)}
+        className="search-bar"
+      />
+
+      {/* Category Filter Chips */}
+      <div className="category-chips">
+        {categories.map((cat) => (
+          <button
+            key={cat}
+            className={`category-chip ${selectedCategory.toLowerCase() === cat.toLowerCase() ? 'active' : ''}`}
+            onClick={() => setSelectedCategory(cat)}
+          >
+            {cat}
+          </button>
+        ))}
       </div>
+
       {loading ? (
-        <div>Loading...</div>
+        <div>Loading products...</div>
+      ) : filteredProducts.length === 0 ? (
+        <div style={{ color: '#a1a1aa', marginTop: '30px', textAlign: 'center' }}>
+          No products found in category "{selectedCategory}".
+        </div>
       ) : (
         <div className="product-grid">
           {filteredProducts.map((product) => (

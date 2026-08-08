@@ -37,27 +37,66 @@ const getProductById = async (req, res) => {
   }
 };
 
+const parseArray = (val) => {
+  if (!val) return [];
+  if (Array.isArray(val)) return val;
+  if (typeof val === 'string') {
+    try {
+      const parsed = JSON.parse(val);
+      if (Array.isArray(parsed)) return parsed;
+    } catch (e) {
+      // ignore JSON parse error, fall back to split
+    }
+    return val.split(',').map(s => s.trim()).filter(Boolean);
+  }
+  return [];
+};
+
 const createProduct = async (req, res) => {
   try {
-    let vendorId = req.body.vendorId;
-    const vendor = await Vendor.findOne({ userId: req.user._id });
+    let vendorId = req.body.vendorId || null;
     
-    if (req.user.role === 'vendor' || !vendorId) {
+    if (req.user.role === 'vendor') {
+      const vendor = await Vendor.findOne({ userId: req.user._id });
       if (!vendor) {
         return res.status(400).json({ message: 'You must have an approved Vendor profile to create products.' });
       }
       vendorId = vendor._id;
+    } else if (req.user.role === 'admin' && !vendorId) {
+      const vendor = await Vendor.findOne({ userId: req.user._id });
+      if (vendor) {
+        vendorId = vendor._id;
+      }
     }
 
-    const { name, description, price, category, stock } = req.body;
-    let imageUrl = '';
+    const {
+      name, description, price, category, stock,
+      imageUrl: bodyImageUrl, gender, brand, discount, sizes, colors, fabric, fit
+    } = req.body;
+
+    let imageUrl = bodyImageUrl || '';
     if (req.file) {
       const result = await cloudinary.uploader.upload(req.file.path);
       imageUrl = result.secure_url;
     }
+
     const product = new Product({
-      name, description, price, category, stock, imageUrl, vendorId
+      name,
+      description,
+      price: Number(price),
+      category,
+      stock: Number(stock),
+      imageUrl,
+      gender,
+      brand,
+      discount: discount ? Number(discount) : 0,
+      sizes: parseArray(sizes),
+      colors: parseArray(colors),
+      fabric,
+      fit,
+      vendorId
     });
+
     const createdProduct = await product.save();
     res.status(201).json(createdProduct);
   } catch (error) {
@@ -67,9 +106,14 @@ const createProduct = async (req, res) => {
 
 const updateProduct = async (req, res) => {
   try {
-    const { name, description, price, category, stock } = req.body;
+    const {
+      name, description, price, category, stock,
+      imageUrl: bodyImageUrl, gender, brand, discount, sizes, colors, fabric, fit
+    } = req.body;
+
     const product = await Product.findById(req.params.id);
     if (product) {
+
       if (req.user.role !== 'admin') {
         const vendor = await Vendor.findOne({ userId: req.user._id });
         if (!vendor || String(product.vendorId) !== String(vendor._id)) {
@@ -77,12 +121,22 @@ const updateProduct = async (req, res) => {
         }
       }
 
-      product.name = name || product.name;
-      product.description = description || product.description;
-      product.price = price || product.price;
-      product.category = category || product.category;
-      product.stock = stock || product.stock;
+      product.name = name !== undefined ? name : product.name;
+      product.description = description !== undefined ? description : product.description;
+      product.price = price !== undefined ? Number(price) : product.price;
+      product.category = category !== undefined ? category : product.category;
+      product.stock = stock !== undefined ? Number(stock) : product.stock;
+      product.gender = gender !== undefined ? gender : product.gender;
+      product.brand = brand !== undefined ? brand : product.brand;
+      product.discount = discount !== undefined ? Number(discount) : product.discount;
+      if (sizes !== undefined) product.sizes = parseArray(sizes);
+      if (colors !== undefined) product.colors = parseArray(colors);
+      product.fabric = fabric !== undefined ? fabric : product.fabric;
+      product.fit = fit !== undefined ? fit : product.fit;
 
+      if (bodyImageUrl) {
+        product.imageUrl = bodyImageUrl;
+      }
       if (req.file) {
         const result = await cloudinary.uploader.upload(req.file.path);
         product.imageUrl = result.secure_url;
