@@ -10,7 +10,7 @@ const productSchema = new mongoose.Schema({
   vendorId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Vendor',
-    required: false
+    required: true
   },
   ratings: { type: Number, default: 0 },
   numReviews: { type: Number, default: 0 },
