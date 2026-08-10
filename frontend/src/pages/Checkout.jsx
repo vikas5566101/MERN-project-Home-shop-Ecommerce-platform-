@@ -100,7 +100,7 @@ const Checkout = () => {
           contact: '9999999999'
         },
         theme: {
-          color: '#f97316'
+          color: '#ea580c'
         }
       };
 
@@ -217,7 +217,7 @@ const Checkout = () => {
               <button type="submit" className="btn" disabled={loading}>
                 {loading ? 'Processing...' : 'Pay Now'}
               </button>
-              <button type="button" className="btn" onClick={handleCOD} disabled={loading} style={{ backgroundColor: loading ? '#9ca3af' : '#22c55e', cursor: loading ? 'not-allowed' : 'pointer' }}>
+              <button type="button" className="btn" onClick={handleCOD} disabled={loading} style={{ background: loading ? '#9ca3af' : 'linear-gradient(135deg, #16a34a 0%, #15803d 100%)', boxShadow: loading ? 'none' : '0 4px 12px rgba(22, 163, 74, 0.25)', cursor: loading ? 'not-allowed' : 'pointer' }}>
                 {loading ? 'Placing Order...' : 'Cash on Delivery'}
               </button>
             </div>

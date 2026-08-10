@@ -29,12 +29,12 @@ const AdminProducts = () => {
 
   return (
     <div style={containerStyle}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-        <h2 style={{ color: '#f97316' }}>Manage Products</h2>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+        <h2 style={{ color: '#0f172a', margin: 0, background: 'none', WebkitTextFillColor: 'initial' }}>Manage Products</h2>
         <Link to="/admin/add-product" className="btn">+ Add Product</Link>
       </div>
 
-      <div style={{ overflowX: 'auto' }}>
+      <div style={{ overflowX: 'auto', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
         <table style={tableStyle}>
           <thead>
             <tr style={rowStyle}>
@@ -50,8 +50,8 @@ const AdminProducts = () => {
             {products.map(product => (
               <tr key={product._id} style={rowStyle}>
                 <td style={tdStyle}>{product._id.substring(0, 8)}...</td>
-                <td style={tdStyle}>{product.name}</td>
-                <td style={tdStyle}>₹{product.price.toFixed(2)}</td>
+                <td style={{ ...tdStyle, fontWeight: '600' }}>{product.name}</td>
+                <td style={{ ...tdStyle, color: '#ea580c', fontWeight: '600' }}>₹{product.price.toFixed(2)}</td>
                 <td style={tdStyle}>{product.category}</td>
                 <td style={tdStyle}>{product.stock}</td>
                 <td style={tdStyle}>
@@ -67,12 +67,12 @@ const AdminProducts = () => {
   );
 };
 
-const containerStyle = { maxWidth: '1200px', margin: '40px auto', padding: '30px', background: '#18181b', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)', color: '#fafafa' };
+const containerStyle = { maxWidth: '1200px', margin: '40px auto', padding: '32px', background: '#ffffff', borderRadius: '16px', border: '1px solid #e2e8f0', boxShadow: '0 4px 20px -2px rgba(15, 23, 42, 0.05)', color: '#0f172a' };
 const tableStyle = { width: '100%', borderCollapse: 'collapse' };
-const rowStyle = { borderBottom: '1px solid rgba(255,255,255,0.1)' };
-const thStyle = { padding: '15px', textAlign: 'left', color: '#a1a1aa', fontSize: '0.9rem' };
-const tdStyle = { padding: '15px', textAlign: 'left' };
-const editBtn = { background: '#3b82f6', color: '#fff', padding: '6px 12px', borderRadius: '4px', marginRight: '10px' };
-const deleteBtn = { background: '#ef4444', color: '#fff', padding: '6px 12px', borderRadius: '4px', border: 'none', cursor: 'pointer' };
+const rowStyle = { borderBottom: '1px solid #e2e8f0' };
+const thStyle = { padding: '14px 18px', textAlign: 'left', color: '#475569', fontSize: '0.85rem', fontWeight: '600', background: '#f8fafc' };
+const tdStyle = { padding: '16px 18px', textAlign: 'left', color: '#0f172a' };
+const editBtn = { background: '#2563eb', color: '#ffffff', padding: '6px 14px', borderRadius: '6px', marginRight: '8px', fontSize: '0.88rem', fontWeight: '500', display: 'inline-block' };
+const deleteBtn = { background: '#dc2626', color: '#ffffff', padding: '6px 14px', borderRadius: '6px', border: 'none', cursor: 'pointer', fontSize: '0.88rem', fontWeight: '500' };
 
 export default AdminProducts;

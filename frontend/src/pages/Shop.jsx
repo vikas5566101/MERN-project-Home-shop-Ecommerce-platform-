@@ -73,9 +73,9 @@ const Shop = () => {
       </div>
 
       {loading ? (
-        <div>Loading products...</div>
+        <div style={{ color: '#64748b', textAlign: 'center', marginTop: '40px' }}>Loading products...</div>
       ) : filteredProducts.length === 0 ? (
-        <div style={{ color: '#a1a1aa', marginTop: '30px', textAlign: 'center' }}>
+        <div style={{ color: '#64748b', marginTop: '40px', textAlign: 'center', fontSize: '1.1rem' }}>
           No products found in category "{selectedCategory}".
         </div>
       ) : (

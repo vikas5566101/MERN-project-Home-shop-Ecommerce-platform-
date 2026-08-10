@@ -13,24 +13,23 @@ const AdminVendors = () => {
       navigate('/');
       return;
     }
+    const fetchApplications = async () => {
+      try {
+        const res = await fetch('/api/vendors/applications', {
+          headers: { Authorization: `Bearer ${user.token}` }
+        });
+        const data = await res.json();
+        if (res.ok) {
+          setApplications(data);
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
     fetchApplications();
   }, [user, navigate]);
-
-  const fetchApplications = async () => {
-    try {
-      const res = await fetch('/api/vendors/applications', {
-        headers: { Authorization: `Bearer ${user.token}` }
-      });
-      const data = await res.json();
-      if (res.ok) {
-        setApplications(data);
-      }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleApprove = async (id) => {
     try {
@@ -67,25 +66,25 @@ const AdminVendors = () => {
 
   return (
     <div style={{ padding: '20px', maxWidth: '1000px', margin: '0 auto' }}>
-      <h2 style={{ color: '#fff', fontSize: '2rem', marginBottom: '20px' }}>Vendor Applications</h2>
+      <h2 style={{ color: '#0f172a', fontSize: '2rem', marginBottom: '20px', background: 'none', WebkitTextFillColor: 'initial' }}>Vendor Applications</h2>
       {loading ? (
-        <p style={{ color: '#a1a1aa' }}>Loading applications...</p>
+        <p style={{ color: '#64748b' }}>Loading applications...</p>
       ) : applications.length === 0 ? (
-        <div style={{ background: '#09090b', padding: '30px', borderRadius: '8px', textAlign: 'center', border: '1px solid #27272a' }}>
-          <p style={{ color: '#a1a1aa' }}>No pending applications.</p>
+        <div style={{ background: '#ffffff', padding: '36px', borderRadius: '14px', textAlign: 'center', border: '1px solid #e2e8f0', boxShadow: '0 4px 16px -2px rgba(15,23,42,0.05)' }}>
+          <p style={{ color: '#64748b', fontSize: '1.05rem', margin: 0 }}>No pending applications.</p>
         </div>
       ) : (
-        <div style={{ display: 'grid', gap: '20px' }}>
+        <div style={{ display: 'grid', gap: '16px' }}>
           {applications.map(app => (
-            <div key={app._id} style={{ background: '#09090b', padding: '20px', borderRadius: '12px', border: '1px solid #27272a', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '20px' }}>
+            <div key={app._id} style={{ background: '#ffffff', padding: '24px', borderRadius: '14px', border: '1px solid #e2e8f0', boxShadow: '0 4px 16px -2px rgba(15,23,42,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '20px' }}>
               <div>
-                <h4 style={{ color: '#f97316', margin: '0 0 5px 0', fontSize: '1.2rem' }}>{app.storeName}</h4>
-                <p style={{ color: '#a1a1aa', margin: '0 0 5px 0', fontSize: '0.9rem' }}>Description: {app.description || 'N/A'}</p>
-                <p style={{ color: '#a1a1aa', margin: '0', fontSize: '0.9rem' }}>User Email: {app.userId?.email}</p>
+                <h4 style={{ color: '#0f172a', margin: '0 0 6px 0', fontSize: '1.25rem', fontWeight: '700' }}>{app.storeName}</h4>
+                <p style={{ color: '#475569', margin: '0 0 4px 0', fontSize: '0.95rem' }}>Description: {app.description || 'N/A'}</p>
+                <p style={{ color: '#64748b', margin: '0', fontSize: '0.9rem' }}>User Email: <span style={{ color: '#0f172a', fontWeight: '500' }}>{app.userId?.email}</span></p>
               </div>
               <div style={{ display: 'flex', gap: '10px' }}>
-                <button onClick={() => handleApprove(app._id)} className="btn" style={{ background: '#10b981', padding: '8px 16px' }}>Approve</button>
-                <button onClick={() => handleReject(app._id)} className="btn" style={{ background: '#ef4444', padding: '8px 16px' }}>Reject</button>
+                <button onClick={() => handleApprove(app._id)} className="btn" style={{ background: '#16a34a', padding: '8px 18px' }}>Approve</button>
+                <button onClick={() => handleReject(app._id)} className="btn" style={{ background: '#dc2626', padding: '8px 18px' }}>Reject</button>
               </div>
             </div>
           ))}

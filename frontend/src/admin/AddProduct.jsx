@@ -72,9 +72,9 @@ const AddProduct = () => {
   };
 
   return (
-    <div style={{ maxWidth: '600px', margin: '40px auto', background: '#18181b', padding: '40px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
-      <h2 style={{ color: '#f97316', marginBottom: '20px' }}>Add New Product (Admin)</h2>
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+    <div style={{ maxWidth: '600px', margin: '40px auto', background: '#ffffff', padding: '40px', borderRadius: '16px', border: '1px solid #e2e8f0', boxShadow: '0 4px 20px -2px rgba(15, 23, 42, 0.05)' }}>
+      <h2 style={{ color: '#0f172a', marginBottom: '24px', background: 'none', WebkitTextFillColor: 'initial' }}>Add New Product (Admin)</h2>
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
         
         <select 
           required 
@@ -114,12 +114,12 @@ const AddProduct = () => {
           style={inputStyle} 
         />
         
-        <div style={{ padding: '15px', border: '1px dashed #f97316', borderRadius: '8px' }}>
-          <label style={{ display: 'block', marginBottom: '10px', color: '#a1a1aa' }}>Upload Product Image (Cloudinary)</label>
+        <div style={{ padding: '18px', border: '1px dashed #ea580c', borderRadius: '10px', background: '#fff7ed' }}>
+          <label style={{ display: 'block', marginBottom: '8px', color: '#475569', fontWeight: '500' }}>Upload Product Image (Cloudinary)</label>
           <input 
             type="file" accept="image/*" required 
             onChange={(e) => setImage(e.target.files[0])} 
-            style={{ color: '#fff' }}
+            style={{ color: '#0f172a' }}
           />
         </div>
 
@@ -132,11 +132,11 @@ const AddProduct = () => {
 };
 
 const inputStyle = {
-  padding: '12px',
-  background: '#09090b',
-  border: '1px solid #27272a',
-  borderRadius: '6px',
-  color: '#fff',
+  padding: '12px 16px',
+  background: '#ffffff',
+  border: '1px solid #cbd5e1',
+  borderRadius: '8px',
+  color: '#0f172a',
   fontSize: '15px',
   outline: 'none'
 };
