@@ -39,12 +39,17 @@ const EditProduct = () => {
     setLoading(false);
     if (res.ok) {
       alert('Product updated successfully!');
-      navigate('/admin/products');
+      if (user.role === 'admin') {
+        navigate('/admin/products');
+      } else {
+        navigate('/vendor/products');
+      }
     }
   };
 
   return (
     <div style={{ maxWidth: '600px', margin: '40px auto', background: '#18181b', padding: '40px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
+      <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: '#a1a1aa', cursor: 'pointer', marginBottom: '20px' }}>← Back</button>
       <h2 style={{ color: '#f97316', marginBottom: '20px' }}>Edit Product</h2>
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
         <input type="text" placeholder="Product Name" required value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} style={inputStyle} />

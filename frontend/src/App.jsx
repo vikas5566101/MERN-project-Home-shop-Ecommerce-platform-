@@ -26,6 +26,7 @@ import AdminVendors from './admin/AdminVendors';
 import VendorDashboard from './vendor/VendorDashboard';
 import VendorAddProduct from './vendor/VendorAddProduct';
 import VendorProducts from './vendor/VendorProducts';
+import VendorOrders from './vendor/VendorOrders';
 
 function App() {
   return (
@@ -56,7 +57,9 @@ function App() {
           
           <Route path="/vendor/dashboard" element={<VendorDashboard />} />
           <Route path="/vendor/add-product" element={<VendorAddProduct />} />
+          <Route path="/vendor/edit-product/:id" element={<EditProduct />} />
           <Route path="/vendor/products" element={<VendorProducts />} />
+          <Route path="/vendor/orders" element={<VendorOrders />} />
           
           <Route path="/verify-otp" element={<VerifyOTP />} />
         </Routes>

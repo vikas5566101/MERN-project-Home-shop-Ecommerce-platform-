@@ -26,7 +26,7 @@ const getVendorProducts = async (req, res) => {
 
 const getProductById = async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id);
+    const product = await Product.findById(req.params.id).populate('vendorId', 'storeName description storeLogo');
     if (product) {
       res.json(product);
     } else {

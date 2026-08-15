@@ -1,5 +1,7 @@
 const Vendor = require('../models/Vendor');
 const User = require('../models/User');
+const Product = require('../models/Product');
+const Order = require('../models/Order');
 
 // User applies to become a vendor
 const applyForVendor = async (req, res) => {
@@ -106,4 +108,45 @@ const getAllApprovedVendors = async (req, res) => {
   }
 };
 
-module.exports = { applyForVendor, getVendorApplications, approveVendor, rejectVendor, getVendorStatus, getAllApprovedVendors };
+// Get vendor stats
+const getVendorStats = async (req, res) => {
+  try {
+    const vendor = await Vendor.findOne({ userId: req.user._id });
+    if (!vendor) return res.status(404).json({ message: 'Vendor not found' });
+
+    // Active Products
+    const activeProductsCount = await Product.countDocuments({ vendorId: vendor._id });
+
+    // Orders involving this vendor
+    const vendorOrders = await Order.find({ 'items.vendorId': vendor._id });
+
+    let totalRevenue = 0;
+    let pendingOrdersCount = 0;
+    const uniqueCustomers = new Set();
+
+    vendorOrders.forEach(order => {
+      let hasPending = false;
+      let vendorItems = order.items.filter(item => item.vendorId.toString() === vendor._id.toString());
+      
+      vendorItems.forEach(item => {
+        totalRevenue += (item.price * item.qty);
+        if (item.status === 'Pending') hasPending = true;
+      });
+
+      if (hasPending) pendingOrdersCount++;
+      uniqueCustomers.add(order.userId.toString());
+    });
+
+    res.json({
+      revenue: totalRevenue,
+      activeProducts: activeProductsCount,
+      pendingOrders: pendingOrdersCount,
+      totalCustomers: uniqueCustomers.size
+    });
+
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+module.exports = { applyForVendor, getVendorApplications, approveVendor, rejectVendor, getVendorStatus, getAllApprovedVendors, getVendorStats };
