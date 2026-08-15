@@ -6,18 +6,19 @@ const OrderSuccess = () => {
     maxWidth: '600px',
     margin: '50px auto',
     padding: '50px 30px',
-    background: '#18181b',
+    background: '#ffffff',
     borderRadius: '16px',
-    border: '1px solid rgba(255, 255, 255, 0.05)',
-    boxShadow: '0 10px 40px rgba(0,0,0,0.5)',
+    border: '1px solid #e2e8f0',
+    boxShadow: '0 4px 20px -2px rgba(15, 23, 42, 0.05)',
     textAlign: 'center'
   };
 
   return (
     <div style={containerStyle}>
-      <h2 style={{ fontSize: '2.5rem', marginBottom: '20px', color: '#10b981' }}>Payment Successful!</h2>
-      <p style={{ color: '#a1a1aa', fontSize: '1.2rem', marginBottom: '40px' }}>
-        Thank you for your order. We have securely received your payment and will process your shipment shortly.
+      <div style={{ fontSize: '3.5rem', marginBottom: '16px' }}>🎉</div>
+      <h2 style={{ fontSize: '2.4rem', marginBottom: '16px', color: '#15803d', background: 'none', WebkitTextFillColor: 'initial' }}>Order Placed Successfully!</h2>
+      <p style={{ color: '#475569', fontSize: '1.1rem', marginBottom: '36px', lineHeight: '1.6' }}>
+        Thank you for your order. We have securely received your transaction details and will process your shipment shortly.
       </p>
       <Link to="/shop" className="btn">Continue Shopping</Link>
     </div>

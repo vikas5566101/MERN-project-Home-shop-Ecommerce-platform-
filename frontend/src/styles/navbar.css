@@ -2,49 +2,51 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 18px 50px;
-  background: rgba(9, 9, 11, 0.8);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 16px 40px;
+  background: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
   position: sticky;
   top: 0;
   z-index: 1000;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.05);
 }
 
 .navbar-brand a {
-  font-size: 28px;
+  font-size: 26px;
   font-weight: 700;
-  color: #fff;
-  letter-spacing: -1px;
+  color: #0f172a;
+  letter-spacing: -0.03em;
   display: flex;
   align-items: center;
   gap: 10px;
-  text-shadow: 0 2px 10px rgba(249, 115, 22, 0.3);
 }
 
 .navbar-brand a::after {
   content: '.';
-  color: #f97316;
-  font-size: 36px;
+  color: #ea580c;
+  font-size: 32px;
+  line-height: 0;
 }
 
 .navbar-links {
   display: flex;
   align-items: center;
-  gap: 30px;
+  gap: 28px;
 }
 
 .navbar-links a, .navbar-links span {
   font-size: 15px;
   font-weight: 500;
-  color: #a1a1aa;
+  color: #475569;
   position: relative;
+  transition: color 0.25s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .navbar-links a:hover {
-  color: #fff;
+  color: #0f172a;
 }
 
 .navbar-links a::after {
@@ -52,10 +54,10 @@
   position: absolute;
   width: 0;
   height: 2px;
-  bottom: -6px;
+  bottom: -4px;
   left: 0;
-  background: #f97316;
-  transition: width 0.3s ease;
+  background: #ea580c;
+  transition: width 0.25s ease;
   border-radius: 2px;
 }
 
@@ -63,28 +65,48 @@
   width: 100%;
 }
 
+.cart-badge {
+  background-color: #ea580c;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 12px;
+  margin-left: 4px;
+  display: inline-block;
+  line-height: 1.2;
+}
+
 .btn-logout {
   background: transparent;
-  color: #ef4444;
-  border: 1px solid rgba(239, 68, 68, 0.3);
-  padding: 8px 16px;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+  padding: 7px 16px;
   border-radius: 6px;
   cursor: pointer;
   font-weight: 600;
+  font-size: 14px;
   font-family: inherit;
-  transition: all 0.3s ease;
+  transition: all 0.25s ease;
 }
 
 .btn-logout:hover {
-  background: rgba(239, 68, 68, 0.1);
-  border-color: #ef4444;
+  background: #fef2f2;
+  border-color: #dc2626;
   transform: translateY(-1px);
 }
 
 @media (max-width: 768px) {
   .navbar {
-    padding: 15px 20px;
+    padding: 14px 20px;
     flex-direction: column;
-    gap: 15px;
+    gap: 14px;
+  }
+
+  .navbar-links {
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
   }
 }
+

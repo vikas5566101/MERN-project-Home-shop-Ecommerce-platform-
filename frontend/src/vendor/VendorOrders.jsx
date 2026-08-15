@@ -68,18 +68,18 @@ const VendorOrders = () => {
     }
   };
 
-  const containerStyle = { maxWidth: '1000px', margin: '40px auto', padding: '30px', background: '#18181b', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)', color: '#fafafa' };
+  const containerStyle = { maxWidth: '1000px', margin: '40px auto', padding: '30px', background: '#ffffff', borderRadius: '16px', border: '1px solid #e2e8f0', boxShadow: '0 4px 16px -2px rgba(15, 23, 42, 0.05)' };
 
-  if (loading) return <div style={{ color: '#f97316', textAlign: 'center', marginTop: '50px' }}>Loading Orders...</div>;
+  if (loading) return <div style={{ color: '#ea580c', textAlign: 'center', marginTop: '50px', fontSize: '1.2rem', fontWeight: '600' }}>Loading Orders...</div>;
 
   return (
     <div style={containerStyle}>
-      <h2 style={{ color: '#fff', fontSize: '2.2rem', marginBottom: '20px' }}>Vendor Orders</h2>
-      <p style={{ color: '#a1a1aa', marginBottom: '30px' }}>Manage the shipping status for items ordered from your store.</p>
+      <h2 style={{ color: '#0f172a', fontSize: '2.2rem', marginBottom: '20px' }}>Vendor Orders</h2>
+      <p style={{ color: '#64748b', marginBottom: '30px' }}>Manage the shipping status for items ordered from your store.</p>
 
       {orders.length === 0 ? (
-        <div style={{ background: '#09090b', padding: '30px', borderRadius: '8px', textAlign: 'center', border: '1px solid #27272a' }}>
-          <p style={{ color: '#a1a1aa' }}>You don't have any orders yet.</p>
+        <div style={{ background: '#f8fafc', padding: '30px', borderRadius: '12px', textAlign: 'center', border: '1px solid #e2e8f0' }}>
+          <p style={{ color: '#64748b', margin: 0, fontSize: '1.1rem' }}>You don't have any orders yet.</p>
         </div>
       ) : (
         <div style={{ display: 'grid', gap: '20px' }}>
@@ -90,19 +90,19 @@ const VendorOrders = () => {
             const visualStatus = isDelivered ? 'Delivered' : isShipped ? 'Shipped' : 'Pending';
 
             return (
-              <div key={order._id} style={{ background: '#09090b', padding: '20px', borderRadius: '12px', border: '1px solid #27272a' }}>
+              <div key={order._id} style={{ background: '#ffffff', padding: '24px', borderRadius: '14px', border: '1px solid #e2e8f0', boxShadow: '0 2px 10px rgba(15,23,42,0.02)' }}>
                 
-                <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #27272a', paddingBottom: '15px', marginBottom: '15px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #e2e8f0', paddingBottom: '15px', marginBottom: '15px' }}>
                   <div>
-                    <p style={{ color: '#a1a1aa', fontSize: '0.9rem', marginBottom: '5px' }}>Order ID: <span style={{ color: '#fff' }}>{order._id}</span></p>
-                    <p style={{ color: '#a1a1aa', fontSize: '0.9rem', marginBottom: '5px' }}>Customer: <span style={{ color: '#fff' }}>{order.user?.name} ({order.user?.email})</span></p>
-                    <p style={{ color: '#a1a1aa', fontSize: '0.9rem' }}>Placed On: <span style={{ color: '#fff' }}>{new Date(order.createdAt).toLocaleDateString()}</span></p>
+                    <p style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '5px' }}>Order ID: <span style={{ color: '#0f172a', fontWeight: '500' }}>{order._id}</span></p>
+                    <p style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '5px' }}>Customer: <span style={{ color: '#0f172a', fontWeight: '500' }}>{order.user?.name} ({order.user?.email})</span></p>
+                    <p style={{ color: '#64748b', fontSize: '0.9rem' }}>Placed On: <span style={{ color: '#0f172a', fontWeight: '500' }}>{new Date(order.createdAt).toLocaleDateString()}</span></p>
                   </div>
                   <div style={{ textAlign: 'right' }}>
                     <p style={{ color: '#10b981', fontSize: '1.2rem', fontWeight: 'bold', marginBottom: '10px' }}>Your Payout: ₹{order.totalAmount.toFixed(2)}</p>
                     <span style={{ 
-                      background: visualStatus === 'Delivered' ? 'rgba(16,185,129,0.1)' : visualStatus === 'Shipped' ? 'rgba(59,130,246,0.1)' : 'rgba(245,158,11,0.1)', 
-                      color: visualStatus === 'Delivered' ? '#10b981' : visualStatus === 'Shipped' ? '#3b82f6' : '#f59e0b',
+                      background: visualStatus === 'Delivered' ? 'rgba(16,185,129,0.1)' : visualStatus === 'Shipped' ? 'rgba(59,130,246,0.1)' : 'rgba(234,88,12,0.1)', 
+                      color: visualStatus === 'Delivered' ? '#10b981' : visualStatus === 'Shipped' ? '#3b82f6' : '#ea580c',
                       padding: '6px 12px', borderRadius: '20px', fontSize: '0.8rem', fontWeight: 'bold' 
                     }}>
                       {visualStatus}
@@ -110,33 +110,33 @@ const VendorOrders = () => {
                   </div>
                 </div>
 
-                <div style={{ marginBottom: '15px' }}>
-                  <h4 style={{ color: '#f97316', marginBottom: '10px', fontSize: '1rem' }}>Items to Fulfill:</h4>
+                <div style={{ marginBottom: '20px' }}>
+                  <h4 style={{ color: '#0f172a', marginBottom: '10px', fontSize: '1rem' }}>Items to Fulfill:</h4>
                   {order.items.map(item => (
-                    <div key={item._id} style={{ display: 'flex', justifyContent: 'space-between', background: '#18181b', padding: '10px', borderRadius: '6px', marginBottom: '8px' }}>
-                      <span style={{ color: '#fff' }}>{item.qty}x {item.name}</span>
-                      <span style={{ color: '#a1a1aa' }}>₹{(item.price * item.qty).toFixed(2)}</span>
+                    <div key={item._id} style={{ display: 'flex', justifyContent: 'space-between', background: '#f8fafc', padding: '12px', borderRadius: '8px', marginBottom: '8px', border: '1px solid #e2e8f0' }}>
+                      <span style={{ color: '#0f172a', fontWeight: '500' }}>{item.qty}x {item.name}</span>
+                      <span style={{ color: '#475569' }}>₹{(item.price * item.qty).toFixed(2)}</span>
                     </div>
                   ))}
                 </div>
                 
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <div style={{ color: '#a1a1aa', fontSize: '0.9rem' }}>
-                    <strong>Shipping To: </strong>{order.address.street}, {order.address.city}, {order.address.postalCode}, {order.address.country}
+                  <div style={{ color: '#475569', fontSize: '0.95rem' }}>
+                    <strong style={{ color: '#0f172a' }}>Shipping To: </strong>{order.address.street}, {order.address.city}, {order.address.postalCode}, {order.address.country}
                   </div>
                   <div style={{ display: 'flex', gap: '10px' }}>
                     <button 
                       onClick={() => updateStatus(order._id, 'Shipped')} 
                       disabled={visualStatus !== 'Pending'}
                       className="btn" 
-                      style={{ background: visualStatus !== 'Pending' ? '#27272a' : '#3b82f6', padding: '8px 16px', fontSize: '0.9rem' }}>
+                      style={{ background: visualStatus !== 'Pending' ? '#cbd5e1' : '#3b82f6', color: visualStatus !== 'Pending' ? '#64748b' : '#fff', padding: '8px 16px', fontSize: '0.9rem', boxShadow: 'none' }}>
                       Mark Shipped
                     </button>
                     <button 
                       onClick={() => updateStatus(order._id, 'Delivered')} 
                       disabled={visualStatus === 'Delivered'}
                       className="btn" 
-                      style={{ background: visualStatus === 'Delivered' ? '#27272a' : '#10b981', padding: '8px 16px', fontSize: '0.9rem' }}>
+                      style={{ background: visualStatus === 'Delivered' ? '#cbd5e1' : '#10b981', color: visualStatus === 'Delivered' ? '#64748b' : '#fff', padding: '8px 16px', fontSize: '0.9rem', boxShadow: 'none' }}>
                       Mark Delivered
                     </button>
                   </div>

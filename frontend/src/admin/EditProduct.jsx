@@ -6,7 +6,7 @@ const EditProduct = () => {
   const { id } = useParams();
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
-  
+
   const [formData, setFormData] = useState({ name: '', description: '', price: '', category: '', stock: '' });
   const [image, setImage] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -48,18 +48,20 @@ const EditProduct = () => {
   };
 
   return (
-    <div style={{ maxWidth: '600px', margin: '40px auto', background: '#18181b', padding: '40px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
+
+    <div style={{ maxWidth: '600px', margin: '40px auto', background: '#ffffff', padding: '40px', borderRadius: '16px', border: '1px solid #e2e8f0', boxShadow: '0 4px 20px -2px rgba(15, 23, 42, 0.05)' }}>
       <button onClick={() => navigate(-1)} style={{ background: 'none', border: 'none', color: '#a1a1aa', cursor: 'pointer', marginBottom: '20px' }}>← Back</button>
-      <h2 style={{ color: '#f97316', marginBottom: '20px' }}>Edit Product</h2>
-      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-        <input type="text" placeholder="Product Name" required value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} style={inputStyle} />
-        <textarea placeholder="Description" required rows="4" value={formData.description} onChange={(e) => setFormData({...formData, description: e.target.value})} style={inputStyle} />
-        <input type="number" placeholder="Price" required value={formData.price} onChange={(e) => setFormData({...formData, price: e.target.value})} style={inputStyle} />
-        <input type="text" placeholder="Category" required value={formData.category} onChange={(e) => setFormData({...formData, category: e.target.value})} style={inputStyle} />
-        <input type="number" placeholder="Stock" required value={formData.stock} onChange={(e) => setFormData({...formData, stock: e.target.value})} style={inputStyle} />
-        <div style={{ padding: '15px', border: '1px dashed #f97316', borderRadius: '8px' }}>
-          <label style={{ display: 'block', marginBottom: '10px', color: '#a1a1aa' }}>Replace Image (Optional)</label>
-          <input type="file" accept="image/*" onChange={(e) => setImage(e.target.files[0])} style={{ color: '#fff' }} />
+      <h2 style={{ color: '#0f172a', marginBottom: '24px', background: 'none', WebkitTextFillColor: 'initial' }}>Edit Product</h2>
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+
+        <input type="text" placeholder="Product Name" required value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} style={inputStyle} />
+        <textarea placeholder="Description" required rows="4" value={formData.description} onChange={(e) => setFormData({ ...formData, description: e.target.value })} style={inputStyle} />
+        <input type="number" placeholder="Price" required value={formData.price} onChange={(e) => setFormData({ ...formData, price: e.target.value })} style={inputStyle} />
+        <input type="text" placeholder="Category" required value={formData.category} onChange={(e) => setFormData({ ...formData, category: e.target.value })} style={inputStyle} />
+        <input type="number" placeholder="Stock" required value={formData.stock} onChange={(e) => setFormData({ ...formData, stock: e.target.value })} style={inputStyle} />
+        <div style={{ padding: '18px', border: '1px dashed #ea580c', borderRadius: '10px', background: '#fff7ed' }}>
+          <label style={{ display: 'block', marginBottom: '8px', color: '#475569', fontWeight: '500' }}>Replace Image (Optional)</label>
+          <input type="file" accept="image/*" onChange={(e) => setImage(e.target.files[0])} style={{ color: '#0f172a' }} />
         </div>
         <button type="submit" disabled={loading} className="btn" style={{ marginTop: '10px' }}>
           {loading ? 'Updating...' : 'Update Product'}
@@ -69,5 +71,5 @@ const EditProduct = () => {
   );
 };
 
-const inputStyle = { padding: '12px', background: '#09090b', border: '1px solid #27272a', borderRadius: '6px', color: '#fff', fontSize: '15px', outline: 'none' };
+const inputStyle = { padding: '12px 16px', background: '#ffffff', border: '1px solid #cbd5e1', borderRadius: '8px', color: '#0f172a', fontSize: '15px', outline: 'none' };
 export default EditProduct;

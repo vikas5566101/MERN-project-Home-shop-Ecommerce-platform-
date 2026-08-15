@@ -29,8 +29,8 @@ const AdminOrders = () => {
 
   return (
     <div style={containerStyle}>
-      <h2 style={{ color: '#f97316', marginBottom: '20px' }}>Manage Orders</h2>
-      <div style={{ overflowX: 'auto' }}>
+      <h2 style={{ color: '#0f172a', marginBottom: '20px', background: 'none', WebkitTextFillColor: 'initial' }}>Manage Orders</h2>
+      <div style={{ overflowX: 'auto', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
         <table style={tableStyle}>
           <thead>
             <tr style={rowStyle}>
@@ -46,13 +46,13 @@ const AdminOrders = () => {
               <tr key={order._id} style={rowStyle}>
                 <td style={tdStyle}>{order._id.substring(0, 8)}...</td>
                 <td style={tdStyle}>{order.userId?.name || 'Deleted User'}</td>
-                <td style={tdStyle}>₹{order.totalAmount.toFixed(2)}</td>
+                <td style={{ ...tdStyle, color: '#ea580c', fontWeight: '600' }}>₹{order.totalAmount.toFixed(2)}</td>
                 <td style={tdStyle}>{new Date(order.createdAt).toLocaleDateString()}</td>
                 <td style={tdStyle}>
                   <select 
                     value={order.status} 
                     onChange={(e) => updateStatus(order._id, e.target.value)}
-                    style={{ background: '#09090b', color: '#fff', padding: '6px', border: '1px solid #27272a', borderRadius: '4px', outline: 'none' }}
+                    style={{ background: '#ffffff', color: '#0f172a', padding: '6px 12px', border: '1px solid #cbd5e1', borderRadius: '6px', outline: 'none', fontSize: '0.9rem', cursor: 'pointer' }}
                   >
                     <option value="Pending">Pending</option>
                     <option value="Shipped">Shipped</option>
@@ -68,10 +68,10 @@ const AdminOrders = () => {
   );
 };
 
-const containerStyle = { maxWidth: '1200px', margin: '40px auto', padding: '30px', background: '#18181b', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)', color: '#fafafa' };
+const containerStyle = { maxWidth: '1200px', margin: '40px auto', padding: '32px', background: '#ffffff', borderRadius: '16px', border: '1px solid #e2e8f0', boxShadow: '0 4px 20px -2px rgba(15, 23, 42, 0.05)', color: '#0f172a' };
 const tableStyle = { width: '100%', borderCollapse: 'collapse' };
-const rowStyle = { borderBottom: '1px solid rgba(255,255,255,0.1)' };
-const thStyle = { padding: '15px', textAlign: 'left', color: '#a1a1aa', fontSize: '0.9rem' };
-const tdStyle = { padding: '15px', textAlign: 'left' };
+const rowStyle = { borderBottom: '1px solid #e2e8f0' };
+const thStyle = { padding: '14px 18px', textAlign: 'left', color: '#475569', fontSize: '0.85rem', fontWeight: '600', background: '#f8fafc' };
+const tdStyle = { padding: '16px 18px', textAlign: 'left', color: '#0f172a' };
 
 export default AdminOrders;
