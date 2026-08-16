@@ -5,9 +5,11 @@ const orderSchema = new mongoose.Schema({
   items: [
     {
       productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
+      vendorId: { type: mongoose.Schema.Types.ObjectId, ref: 'Vendor', required: true },
       name: { type: String },
       qty: { type: Number, required: true },
-      price: { type: Number, required: true }
+      price: { type: Number, required: true },
+      status: { type: String, enum: ['Pending', 'Shipped', 'Delivered'], default: 'Pending' }
     }
   ],
   totalAmount: { type: Number, required: true },

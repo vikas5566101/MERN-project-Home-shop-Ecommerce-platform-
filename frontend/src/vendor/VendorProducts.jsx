@@ -72,7 +72,10 @@ const VendorProducts = () => {
                 <p style={{ color: '#ea580c', fontSize: '1.2rem', fontWeight: '700', margin: '0 0 8px 0' }}>₹{product.price.toFixed(2)}</p>
                 <p style={{ color: '#64748b', fontSize: '0.9rem', marginBottom: '16px' }}>Stock: {product.stock}</p>
                 <div style={{ display: 'flex', gap: '10px' }}>
+
+                  <button onClick={() => navigate(`/vendor/edit-product/${product._id}`)} className="btn" style={{ background: '#3b82f6', flex: 1 }}>Edit</button>
                   <button onClick={() => handleDelete(product._id)} className="btn" style={{ background: '#dc2626', flex: 1, padding: '8px' }}>Delete</button>
+
                 </div>
               </div>
             </div>

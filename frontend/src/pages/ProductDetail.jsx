@@ -68,6 +68,18 @@ const ProductDetail = () => {
             <p style={{ color: '#475569', lineHeight: '1.8', fontSize: '1rem' }}>{product.description}</p>
           </div>
 
+          {/* Vendor Details */}
+          {product.vendorId && (
+            <div style={{ marginBottom: '25px', padding: '15px', background: 'rgba(249, 115, 22, 0.05)', borderRadius: '10px', border: '1px solid rgba(249, 115, 22, 0.2)' }}>
+              <h4 style={{ color: '#f97316', marginBottom: '8px', fontSize: '1.1rem' }}>Sold By: {product.vendorId.storeName}</h4>
+              {product.vendorId.description && (
+                <p style={{ color: '#a1a1aa', fontSize: '0.9rem', lineHeight: '1.5', margin: 0 }}>
+                  {product.vendorId.description}
+                </p>
+              )}
+            </div>
+          )}
+
           {/* Cart & Stock Actions */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
             <button onClick={handleAddToCart} className="btn" style={{ flexGrow: '1', padding: '16px', fontSize: '1.1rem' }}>
